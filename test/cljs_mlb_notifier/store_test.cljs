@@ -1,9 +1,47 @@
 (ns cljs-mlb-notifier.store-test
-  (:require [cljs.test :refer-macros [deftest testing is are]]
+  (:require [cljs.test :refer-macros [deftest testing is are use-fixtures]]
+            [cljs-time.core :as tc]
             [cljs-mlb-notifier.store :as s]))
 
+(use-fixtures :each (fn [f]
+                      (reset! s/game-store {})
+                      (reset! s/event-store {})
+                      (f)))
+
 (deftest date-key-test
-  (is (= "2016/06/30" (s/date-key "2016/06/30/cinmlb-texmlb-1"))))
+  (are [expected in]
+       (= expected (s/date-key in))
+
+       "2016/06/30" "2016/06/30/cinmlb-texmlb-1"
+       "2016/07/02" "2016/07/02/cinmlb-texmlb-1"))
+
+(deftest clean-store!-test
+  (testing "That you can clean the store"
+    (let [g1 {:id "2016/06/01/cinmlb-texmlb-1"}
+          g2 {:id "2016/06/10/cinmlb-texmlb-1"}
+          g3 {:id "2016/06/20/cinmlb-texmlb-1"}]
+      (s/save-game! g1)
+      (s/save-game! g2)
+      (s/save-game! g3)
+      (s/clean-store! s/game-store (tc/date-time 2016 6 14))
+      (is (= (count @s/game-store) 1))
+      (is (= (count (get @s/game-store "2016/06/20")) 1)))))
+
+(deftest clean-stores!-test
+  (testing "That all the stores can be cleaned at once"
+    (let [g1 {:id "2016/06/01/cinmlb-texmlb-1"}
+          g2 {:id "2016/06/20/cinmlb-texmlb-1"}
+          e1 {:game-id "2016/06/05/cinmlb-texmlb-1"}
+          e2 {:game-id "2016/06/25/cinmlb-texmlb-1"}]
+      (s/save-game! g1)
+      (s/save-game! g2)
+      (s/save-event! e1)
+      (s/save-event! e2)
+      (s/clean-stores! (tc/date-time 2016 6 10))
+      (is (= (count @s/game-store) 1))
+      (is (= (count (get @s/game-store "2016/06/20")) 1))
+      (is (= (count @s/event-store) 1))
+      (is (= (count (get @s/event-store "2016/06/25")) 1)))))
 
 (deftest game-store
   (testing "That saving a boxscore updates the store"

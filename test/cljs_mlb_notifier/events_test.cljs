@@ -96,6 +96,8 @@
           to (-> from
                  (assoc-in [:boxscore :linescore :home-team-runs] "3"))]
       (is (= [{:game-id (:id to)
+               :away "cin"
+               :home "tex"
                :text "TEX broke the tie in the 7th, 3-2"}]
              (e/lead-change-determiner from to)))))
   (testing "When the away team breaks a late tie, we get an event."
@@ -106,6 +108,8 @@
           to (-> from
                  (assoc-in [:boxscore :linescore :away-team-runs] "3"))]
       (is (= [{:game-id (:id to)
+               :away "cin"
+               :home "tex"
                :text "CIN broke the tie in the 7th, 3-2"}]
              (e/lead-change-determiner from to)))))
   (testing "When the home team takes a late lead, we get an event."
@@ -116,6 +120,8 @@
           to (-> from
                  (assoc-in [:boxscore :linescore :home-team-runs] "5"))]
       (is (= [{:game-id (:id to)
+               :away "cin"
+               :home "tex"
                :text "TEX took the lead in the 8th, 5-3"}]
              (e/lead-change-determiner from to)))))
   (testing "When the home team extends its lead, no events."
@@ -142,6 +148,8 @@
           to (-> from
                  (assoc-in [:boxscore :linescore :away-team-runs] "5"))]
       (is (= [{:game-id (:id to)
+               :away "cin"
+               :home "tex"
                :text "CIN took the lead in the 8th, 5-2"}]
              (e/lead-change-determiner from to)))))
   (testing "When the home team ties it up, we get an event."
@@ -151,6 +159,8 @@
           to (-> from
                  (assoc-in [:boxscore :linescore :home-team-runs] "3"))]
       (is (= [{:game-id (:id to)
+               :away "cin"
+               :home "tex"
               :text "TEX tied it up in the 9th, 3-3"}]
              (e/lead-change-determiner from to)))))
   (testing "When the away team ties it up, we get an event."
@@ -160,6 +170,8 @@
           to (-> from
                  (assoc-in [:boxscore :linescore :away-team-runs] "4"))]
       (is (= [{:game-id (:id to)
+               :away "cin"
+               :home "tex"
                :text "CIN tied it up in the 10th, 4-4"}]
              (e/lead-change-determiner from to))))))
 
@@ -198,6 +210,8 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :batting] [{:batter [batter]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Bryce Harper has 4 H"}]
              (e/batter-determiner bs bs)))))
   (testing "Two batters each have a feat"
@@ -208,8 +222,12 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :batting] [{:batter [b1]} {:batter [b2]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Bryce Harper has 4 HR"}
               {:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Mike Trout has 5 BB"}]
              (e/batter-determiner bs bs)))))
   (testing "A big game has many feats"
@@ -224,6 +242,8 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :batting] [{:batter [batter]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
               :text "Bryce Harper has 4 H, 4 HR, 4 RBI, 4 R, 3 BB, 3 SB"}] (e/batter-determiner bs bs))))))
 
 (def default-pitcher
@@ -294,6 +314,8 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :pitching] [{:pitcher [p1]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw has 10 K"}]
              (e/pitcher-determiner bs bs)))))
   (testing "Pitcher has a perfect game through 5"
@@ -305,6 +327,8 @@
           bs (-> default-boxscore
                   (assoc-in [:boxscore :pitching] [{:pitcher [p1]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw is perfect through 5"}]
              (e/pitcher-determiner bs bs)))))
   (testing "Pitcher has a perfect game through 7 and 15 K"
@@ -317,8 +341,12 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :pitching] [{:pitcher [p1]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw has 15 K"}
               {:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw is perfect through 7"}]
              (e/pitcher-determiner bs bs)))))
   (testing "Pitcher has a no-hitter through 5"
@@ -330,6 +358,8 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :pitching] [{:pitcher [p1]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw has a no-hitter through 6"}]
              (e/pitcher-determiner bs bs)))))
   (testing "Pitcher has a shutout through 8"
@@ -342,6 +372,8 @@
           bs (-> default-boxscore
                  (assoc-in [:boxscore :pitching] [{:pitcher [p1]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw has a shutout through 8"}]
              (e/pitcher-determiner bs bs)))))
   (testing "Both starters have a lot of strikeouts"
@@ -354,7 +386,11 @@
                  (assoc-in [:boxscore :pitching]
                            [{:pitcher [p1]} {:pitcher [p2]}]))]
       (is (= [{:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Clayton Kershaw has 11 K"}
               {:game-id (:id bs)
+               :away "cin"
+               :home "tex"
                :text "Zack Greinke has 12 K"}]
              (e/pitcher-determiner bs bs))))))

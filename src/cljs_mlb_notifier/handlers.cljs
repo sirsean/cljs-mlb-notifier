@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [cljs.core.async :refer [chan <! >! close!]]
             [goog.string :refer [format]]
+            [clojure.string :as s]
             [cljs-mlb-notifier.log :refer [log]]
             [cljs-mlb-notifier.mailgun :as mailgun]
             [cljs-mlb-notifier.events :as events]
@@ -33,11 +34,10 @@
 
 (defn format-event
   [event]
-  (let [game (store/get-game (:game-id event))]
-    (format "[%s @ %s] %s"
-            (:away-name-abbrev game)
-            (:home-name-abbrev game)
-            (:text event))))
+  (format "[%s @ %s] %s"
+          (s/upper-case (:away event))
+          (s/upper-case (:home event))
+          (:text event)))
 
 (defn send-event!
   [event]

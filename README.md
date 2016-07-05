@@ -2,41 +2,46 @@
 
 FIXME: description
 
+## Installation
+
+You will need to install Leiningen and NodeJS.
+
 ## REPL
 
 ```
-lein trampoline noderepl
+./repl.sh
 ```
 
-## Installation
+## Configuration
 
-Download from http://example.com/FIXME.
+You will need to set the following environment variables:
+
+* `MLB_NOTIFIER_FROM`
+* `MLB_NOTIFIER_TO`
+* `MAILGUN_DOMAIN`
+* `MAILGUN_API_KEY`
+
+And if you set the debugging bit, it won't actually send the emails, but
+instead will only log them:
+
+* `MLB_NOTIFIER_DEBUG=true`
 
 ## Usage
 
-FIXME: explanation
+Compile:
 
-    $ java -jar cljs-mlb-notifier-0.1.0-standalone.jar [args]
+```
+lein cljsbuild once core
+```
 
-## Options
+Test:
 
-FIXME: listing of options this app accepts.
+```
+lein doo node test
+```
 
-## Examples
+Run:
 
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+```
+node resources/public/js/core.js
+```

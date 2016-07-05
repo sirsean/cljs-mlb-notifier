@@ -50,6 +50,8 @@
       (cond
         (and (nil? from-leader) to-leader) ; it was tied, now it isn't
         [{:game-id (:id to)
+          :away (:away-name-abbrev to)
+          :home (:home-name-abbrev to)
           :text (format "%s broke the tie in the %s, %d-%d"
                         (s/upper-case (:leader to-leader))
                         (friendly-inning inning)
@@ -58,6 +60,8 @@
 
         (and from-leader (nil? to-leader)) ; it wasn't tied, now it is
         [{:game-id (:id to)
+          :away (:away-name-abbrev to)
+          :home (:home-name-abbrev to)
           :text (format "%s tied it up in the %s, %d-%d"
                         (s/upper-case (:trailer from-leader))
                         (friendly-inning inning)
@@ -66,6 +70,8 @@
 
         (and from-leader (not (leader-equal? from-leader to-leader))) ; wasn't tied, leader changed
         [{:game-id (:id to)
+          :away (:away-name-abbrev to)
+          :home (:home-name-abbrev to)
           :text (format "%s took the lead in the %s, %d-%d"
                         (s/upper-case (:leader to-leader))
                         (friendly-inning inning)
@@ -113,13 +119,15 @@
                (:batting boxscore))))
 
 (defn batter-determiner
-  [prev {:keys [boxscore]}]
+  [prev {:keys [away-name-abbrev home-name-abbrev boxscore]}]
   (if (not (nil? prev))
     (vec (filter (complement nil?)
                  (map (fn [b] 
                         (let [feats (batter-feats b)]
                           (when (> (count feats) 0)
                             {:game-id (:game-id boxscore)
+                             :away away-name-abbrev 
+                             :home home-name-abbrev
                              :text (str (:name-display-first-last b) " has "
                                         (friendly-feats feats))})))
                       (all-batters boxscore))))
@@ -172,15 +180,19 @@
                                (outs->innings (:out pitcher)))))
 
 (defn pitcher-determiner
-  [prev {:keys [boxscore]}]
+  [prev {:keys [away-name-abbrev home-name-abbrev boxscore]}]
   (if (not (nil? prev))
     (vec (filter (complement nil?)
                  (flatten (map (fn [p]
                                  [(when-let [text (pitcher-k p)]
                                     {:game-id (:game-id boxscore)
+                                     :away away-name-abbrev
+                                     :home home-name-abbrev
                                      :text text})
                                   (when-let [text (pitcher-game-progress p)]
                                     {:game-id (:game-id boxscore)
+                                     :away away-name-abbrev
+                                     :home home-name-abbrev
                                      :text text})])
                                (starting-pitchers boxscore)))))
     []))

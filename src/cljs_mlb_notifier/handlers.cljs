@@ -29,7 +29,6 @@
 
 (defn game-handler
   [game]
-  (store/save-game! game)
   (fetch/boxscore! channels/boxscore-chan game))
 
 (defn format-event

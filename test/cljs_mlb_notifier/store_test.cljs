@@ -5,27 +5,6 @@
 (deftest date-key-test
   (is (= "2016/06/30" (s/date-key "2016/06/30/cinmlb-texmlb-1"))))
 
-(deftest game-store-test
-  (testing "That saving a game updates the store"
-    (let [game1-id "2016/06/30/cinmlb-texmlb-1"
-          game1 {:id game1-id}
-          game2-id "2016/06/30/cinmlb-minmlb-1"
-          game2 {:id game2-id}
-          game3-id "2016/07/01/cinmlb-texmlb-1"
-          game3 {:id game3-id}]
-      (s/save-game! game1)
-      (is (= (count @s/game-store) 1))
-      (is (= (count (get @s/game-store "2016/06/30")) 1))
-      (is (= game1 (s/get-game game1-id)))
-      (s/save-game! game2)
-      (is (= (count @s/game-store) 1))
-      (is (= (count (get @s/game-store "2016/06/30")) 2))
-      (is (= game2 (s/get-game game2-id)))
-      (s/save-game! game3)
-      (is (= (count @s/game-store) 2))
-      (is (= (count (get @s/game-store "2016/07/01")) 1))
-      (is (= game3 (s/get-game game3-id))))))
-
 (deftest boxscore-store-test
   (testing "That saving a boxscore updates the store"
     (let [game1-id "2016/06/30/cinmlb-texmlb-1"

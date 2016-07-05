@@ -2,7 +2,7 @@
   (:require [goog.string :refer [format]]
             [cljs-mlb-notifier.mlb :as mlb]))
 
-(def boxscore-store (atom {}))
+(def game-store (atom {}))
 (def event-store (atom {}))
 
 (defn date-key
@@ -10,16 +10,16 @@
   (let [[year month day] (mlb/game-id->date game-id)]
     (format "%04d/%02d/%02d" year month day)))
 
-(defn get-boxscore
+(defn get-game
   [game-id]
   (let [date-key (date-key game-id)]
-    (-> @boxscore-store (get date-key) (get game-id))))
+    (-> @game-store (get date-key) (get game-id))))
 
-(defn save-boxscore!
+(defn save-game!
   [boxscore]
   (let [game-id (:id boxscore)
         date-key (date-key game-id)]
-    (swap! boxscore-store assoc-in [date-key game-id] boxscore)))
+    (swap! game-store assoc-in [date-key game-id] boxscore)))
 
 (defn get-event
   [event]

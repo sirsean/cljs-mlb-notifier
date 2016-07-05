@@ -20,8 +20,8 @@
 
 (defn boxscore-handler
   [boxscore]
-  (let [prev (store/get-boxscore (:id boxscore))]
-    (store/save-boxscore! boxscore)
+  (let [prev (store/get-game (:id boxscore))]
+    (store/save-game! boxscore)
     (loop [events (events/compare-games prev boxscore)]
       (when-let [e (first events)]
         (go (>! channels/event-chan e))
